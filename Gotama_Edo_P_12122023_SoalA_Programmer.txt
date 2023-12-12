@@ -1,0 +1,294 @@
+1. Buatlah tabel "users" yang memiliki struktur/model sebagai berikut. Tabel
+"users" merupakan kumpulan data peserta didik di sebuah sekolah.
+
+script mySQL
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp default CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO `users` (`username`, `email`, `password`) VALUES
+('Andi', 'andi@andi.com', '12345'),
+('Budi', 'budi@budi.com', '67890'),
+('Caca', 'caca@caca.com', 'abcde'),
+('Deni', 'deni@deni.com', 'fghij'),
+('Euis', 'euis@euis.com', 'klmno'),
+('Fafa', 'fafa@fafa.com', 'pqrst')
+;
+
+select * from users
+
+--hasil :
+# id	username	email	password	created_at	updated_at
+1	Andi	andi@andi.com	12345	2023-12-12 08:47:55	2023-12-12 08:47:55
+2	Budi	budi@budi.com	67890	2023-12-12 08:47:55	2023-12-12 08:47:55
+3	Caca	caca@caca.com	abcde	2023-12-12 08:47:55	2023-12-12 08:47:55
+4	Deni	deni@deni.com	fghij	2023-12-12 08:47:55	2023-12-12 08:47:55
+5	Euis	euis@euis.com	klmno	2023-12-12 08:47:55	2023-12-12 08:47:55
+6	Fafa	fafa@fafa.com	pqrst	2023-12-12 08:47:55	2023-12-12 08:47:55
+
+
+2. Buatlah tabel "courses" yang memiliki struktur/model sebagai berikut. Tabel
+"courses" merupakan kumpulan data mata kuliah yang diajarkan di sebuah
+sekolah
+
+script mySQL
+
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT,
+    course VARCHAR(50) NOT NULL,
+    mentor VARCHAR(50) NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO `courses` (`course`, `mentor`, `title`) VALUES
+('C++', 'Ari', 'Dr.'),
+('C#', 'Ari', 'Dr.'),
+('C++', 'Ari', 'Dr.'),
+('CSS', 'Cania', 'S.Kom'),
+('HTML', 'Cania', 'S.Kom'),
+('Javascript', 'Cania', 'S.Kom'),
+('Python', 'Barry', 'S.T.'),
+('Micropython', 'Barry', 'S.T.'),
+('Java', 'Darren', 'M.T.'),
+('Ruby', 'Darren', 'M.T.')
+;
+
+select * from courses;
+
+--hasil :
+# id	course	mentor	title
+1	C++	Ari	Dr.
+2	C#	Ari	Dr.
+3	C++	Ari	Dr.
+4	CSS	Cania	S.Kom
+5	HTML	Cania	S.Kom
+6	Javascript	Cania	S.Kom
+7	Python	Barry	S.T.
+8	Micropython	Barry	S.T.
+9	Java	Darren	M.T.
+10	Ruby	Darren	M.T.
+
+3. Buatlah tabel "userCourse" yang memiliki struktur/model sebagai berikut.
+Tabel "userCourse" merupakan tabel penghubung/transaksi antara tabel
+"user" & "courses".
+
+CREATE TABLE IF NOT EXISTS `userCourse` (
+ `id` INT AUTO_INCREMENT PRIMARY KEY,
+ `id_user` INT(11) NOT NULL,
+ `id_course` INT(11) NOT NULL,
+ FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+ FOREIGN KEY (`id_course`) REFERENCES `courses` (`id`) ON DELETE CASCADE
+);
+
+INSERT INTO `usercourse` (`id_user`, `id_course`) VALUES
+(1,1),
+(1,2),
+(1,3),
+(2,4),
+(2,5),
+(2,6),
+(3,7),
+(3,8),
+(3,9),
+(4,1),
+(4,3),
+(4,5),
+(5,2),
+(5,4),
+(5,6),
+(6,7),
+(6,8),
+(6,9);
+
+select * from usercourse;
+
+# id	id_user	id_course
+1	1	1
+2	1	2
+3	1	3
+4	2	4
+5	2	5
+6	2	6
+7	3	7
+8	3	8
+9	3	9
+10	4	1
+11	4	3
+12	4	5
+13	5	2
+14	5	4
+15	5	6
+16	6	7
+17	6	8
+18	6	9
+
+4. Dari tabel "users", "courses" dan "userCourse", tampilkan semua daftar
+peserta didik beserta mata kuliah yang diikutinya, lengkap dengan nama &
+gelar mentornya. 
+
+script mysql
+
+SELECT 
+    u.id AS id,
+    u.username AS username,
+    c.course AS course,
+    c.mentor AS mentor,
+    c.title AS title
+FROM 
+    usercourse uc
+INNER JOIN     
+    users u ON uc.id_user = u.id
+INNER JOIN 
+    courses c ON uc.id_course = c.id;
+
+hasil
+# id	username	course	mentor	title
+1	Andi	C++	Ari	Dr.
+1	Andi	C#	Ari	Dr.
+1	Andi	C++	Ari	Dr.
+2	Budi	CSS	Cania	S.Kom
+2	Budi	HTML	Cania	S.Kom
+2	Budi	Javascript	Cania	S.Kom
+3	Caca	Python	Barry	S.T.
+3	Caca	Micropython	Barry	S.T.
+3	Caca	Java	Darren	M.T.
+4	Deni	C++	Ari	Dr.
+4	Deni	C++	Ari	Dr.
+4	Deni	HTML	Cania	S.Kom
+5	Euis	C#	Ari	Dr.
+5	Euis	CSS	Cania	S.Kom
+5	Euis	Javascript	Cania	S.Kom
+6	Fafa	Python	Barry	S.T.
+6	Fafa	Micropython	Barry	S.T.
+6	Fafa	Java	Darren	M.T.
+
+5. Dari tabel "users", "courses" dan "userCourse", tampilkan daftar peserta didik
+beserta mata kuliah yang diikutinya, yang mentornya bergelar sarjana
+
+script mysql
+SELECT 
+    u.id AS id,
+    u.username AS username,
+    c.course AS course,
+    c.mentor AS mentor,
+    c.title AS title
+FROM 
+    usercourse uc
+INNER JOIN     
+    users u ON uc.id_user = u.id
+INNER JOIN 
+    courses c ON uc.id_course = c.id
+where c.title in ('S.T.','S.Kom')
+order by u.id asc;
+
+hasil
+# id	username	course	mentor	title
+2	Budi	CSS	Cania	S.Kom
+2	Budi	HTML	Cania	S.Kom
+2	Budi	Javascript	Cania	S.Kom
+3	Caca	Python	Barry	S.T.
+3	Caca	Micropython	Barry	S.T.
+4	Deni	HTML	Cania	S.Kom
+5	Euis	CSS	Cania	S.Kom
+5	Euis	Javascript	Cania	S.Kom
+6	Fafa	Python	Barry	S.T.
+6	Fafa	Micropython	Barry	S.T.
+
+6. Dari tabel "users", "courses" dan "userCourse", tampilkan daftar peserta didik
+beserta mata kuliah yang diikutinya, yang mentornya bergelar selain
+sarjana
+
+mySQL script
+SELECT 
+    u.id AS id,
+    u.username AS username,
+    c.course AS course,
+    c.mentor AS mentor,
+    c.title AS title
+FROM 
+    usercourse uc
+INNER JOIN     
+    users u ON uc.id_user = u.id
+INNER JOIN 
+    courses c ON uc.id_course = c.id
+where c.title not in ('S.T.','S.Kom')
+order by u.id asc;
+
+hasil
+# id	username	course	mentor	title
+1	Andi	C++	Ari	Dr.
+1	Andi	C#	Ari	Dr.
+1	Andi	C++	Ari	Dr.
+3	Caca	Java	Darren	M.T.
+4	Deni	C++	Ari	Dr.
+4	Deni	C++	Ari	Dr.
+5	Euis	C#	Ari	Dr.
+6	Fafa	Java	Darren	M.T.
+
+7. Dari tabel "users", "courses" dan "userCourse", tampilkan jumlah peserta didik
+untuk setiap mata kuliah.
+
+SELECT 
+    c.course AS course,
+    c.mentor AS mentor,
+    c.title AS title,
+    COUNT(u.username) AS jumlahpeserta
+FROM 
+    usercourse uc
+INNER JOIN     
+    users u ON uc.id_user = u.id
+INNER JOIN 
+    courses c ON uc.id_course = c.id
+GROUP BY 
+    c.course,
+    c.mentor,
+    c.title
+ORDER BY 
+    mentor ASC;
+
+hasil :
+# course	mentor	title	jumlahpeserta
+C++	Ari	Dr.	4
+C#	Ari	Dr.	2
+Python	Barry	S.T.	2
+Micropython	Barry	S.T.	2
+CSS	Cania	S.Kom	2
+HTML	Cania	S.Kom	2
+Javascript	Cania	S.Kom	2
+Java	Darren	M.T.	2
+
+8. Dari tabel "users", "courses" dan "userCourse", tampilkan jumlah peserta didik
+beserta total fee untuk setiap mentor. Total fee dihitung dengan besaran Rp
+2.000.000,- per peserta didik.
+
+SELECT 
+    c.mentor AS mentor,
+    COUNT(u.username) AS jumlahpeserta,
+    COUNT(u.username)*2000000 AS total_fee
+FROM 
+    usercourse uc
+INNER JOIN     
+    users u ON uc.id_user = u.id
+INNER JOIN 
+    courses c ON uc.id_course = c.id
+GROUP BY 
+    c.mentor
+ORDER BY 
+    jumlahpeserta DESC;
+
+hasil :
+
+# mentor	jumlahpeserta	total_fee
+Ari	6	12000000
+Cania	6	12000000
+Barry	4	8000000
+Darren	2	4000000
+
